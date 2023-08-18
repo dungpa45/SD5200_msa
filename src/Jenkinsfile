@@ -2,8 +2,8 @@ pipeline {
     agent none
     environment {
         REGION="ap-southeast-1"
-        FRONTEND_REPO="app-frontend"
-        BACKEND_REPO="app-backend"
+        FRONTEND_REPO="frontend"
+        BACKEND_REPO="backend"
         REPO_URI="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops"
         IMAGE_TAG="${BUILD_NUMBER}"
     }
