@@ -13,6 +13,7 @@ pipeline {
             steps {
                 withAWS(region:'ap-southeast-1',credentials:'aws dung-wru') {
                     sh "cd src"
+                    sh "pwd"
                     sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_URI}"
                     sh "docker build -t ${FRONTEND_REPO} frontend/"
                     sh "docker tag ${FRONTEND_REPO}:latest ${REPO_URI}/${FRONTEND_REPO}:${IMAGE_TAG}"
