@@ -12,7 +12,7 @@ pipeline {
             agent any
             steps {
                 withAWS(region:'ap-southeast-1',credentials:'aws dung-wru') {
-                    sh "pwd"
+                    sh "cd src"
                     sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_URI}"
                     sh "docker build -t ${FRONTEND_REPO} frontend/"
                     sh "docker tag ${FRONTEND_REPO}:latest ${REPO_URI}/${FRONTEND_REPO}:${IMAGE_TAG}"
@@ -24,6 +24,7 @@ pipeline {
             agent any
             steps {
                 withAWS(region:'ap-southeast-1',credentials:'aws dung-wru') {
+                    sh "cd src"
                     sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_URI}"
                     sh "docker build -t ${BACKEND_REPO} backend/"
                     sh "docker tag ${BACKEND_REPO}:latest ${REPO_URI}/${BACKEND_REPO}:${IMAGE_TAG}"
