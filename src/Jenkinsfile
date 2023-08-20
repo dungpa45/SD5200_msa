@@ -4,7 +4,8 @@ pipeline {
         REGION="ap-southeast-1"
         FRONTEND_REPO="frontend"
         BACKEND_REPO="backend"
-        REPO_URI="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops"
+        REPO_FE="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-frontend"
+        REPO_BE="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-frontend"
         IMAGE_TAG="${BUILD_NUMBER}"
     }
     stages {
@@ -14,10 +15,10 @@ pipeline {
                 dir('src'){
                     withAWS(region:'ap-southeast-1',credentials:'aws dung-wru') {
                     sh "pwd"
-                    sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_URI}"
+                    sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_FE}"
                     sh "docker build -t ${FRONTEND_REPO} frontend/"
-                    sh "docker tag ${FRONTEND_REPO}:latest ${REPO_URI}/${FRONTEND_REPO}:${IMAGE_TAG}"
-                    sh "docker push ${REPO_URI}/${FRONTEND_REPO}:${IMAGE_TAG}"
+                    sh "docker tag ${FRONTEND_REPO}:latest ${REPO_FE}:${IMAGE_TAG}"
+                    sh "docker push ${REPO_FE}:${IMAGE_TAG}"
                 }
                 }
             }
@@ -27,10 +28,10 @@ pipeline {
             steps {
                 dir('src'){
                     withAWS(region:'ap-southeast-1',credentials:'aws dung-wru') {
-                    sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_URI}"
+                    sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${REPO_BE}"
                     sh "docker build -t ${BACKEND_REPO} backend/"
-                    sh "docker tag ${BACKEND_REPO}:latest ${REPO_URI}/${BACKEND_REPO}:${IMAGE_TAG}"
-                    sh "docker push ${REPO_URI}/${BACKEND_REPO}:${IMAGE_TAG}"
+                    sh "docker tag ${BACKEND_REPO}:latest ${REPO_BE}:${IMAGE_TAG}"
+                    sh "docker push ${REPO_BE}:${IMAGE_TAG}"
                 }
                 }
             }
