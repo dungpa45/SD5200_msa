@@ -5,7 +5,7 @@ pipeline {
         FRONTEND_REPO="frontend"
         BACKEND_REPO="backend"
         REPO_FE="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-frontend"
-        REPO_BE="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-frontend"
+        REPO_BE="626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-backend"
         IMAGE_TAG="${BUILD_NUMBER}"
     }
     stages {
