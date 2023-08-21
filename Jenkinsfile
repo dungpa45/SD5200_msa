@@ -49,6 +49,7 @@ pipeline {
             }
         }
         stage('Clean up'){
+            agent any
             steps {
                 sh "rm -rf be.yaml fe.yaml"
                 sh "docker rmi ${REPO_BE}:${IMAGE_TAG}"
