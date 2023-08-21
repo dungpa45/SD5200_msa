@@ -35,8 +35,7 @@ pipeline {
         stage('Deploy Frontend'){
             agent any
             steps {
-                sh "export tagfe=${IMAGE_TAG}"
-                sh "envsubst < frontend.yaml > fe.yaml"
+                sh "export tagfe=${IMAGE_TAG};envsubst < frontend.yaml > fe.yaml"
                 sh "kubectl apply -f fe.yaml"
                 sh "kubectl get service"
             }
@@ -44,8 +43,7 @@ pipeline {
         stage('Deploy Backend'){
             agent any
             steps {
-                sh "export tagbe=${IMAGE_TAG}"
-                sh "envsubst < backend.yaml > be.yaml"
+                sh "export tagbe=${IMAGE_TAG};envsubst < backend.yaml > be.yaml"
                 sh "kubectl apply -f be.yaml"
                 sh "kubectl get service"
             }
