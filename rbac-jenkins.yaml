@@ -7,7 +7,12 @@ rules:
   resources: ["*"]
   verbs: ["*"]
 
-
+--- 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubernetes-enforce
+  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -20,4 +25,5 @@ roleRef:
 subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: User
+  namespace: kube-system
   name: arn:aws:iam::626557673667:role/bastion-nashtech-devops
