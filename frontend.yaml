@@ -6,9 +6,9 @@ spec:
   selector:
     app: frontend
   ports:
-    - port: 3000
+    - port: 6969
       protocol: TCP
-      targetPort: 3000
+      targetPort: 6969
   type: ClusterIP
 
 ---
@@ -31,5 +31,5 @@ spec:
           image: 626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-frontend:$tagfe
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 6969
 
