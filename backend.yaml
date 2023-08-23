@@ -6,9 +6,9 @@ spec:
   selector:
     app: backend
   ports:
-    - port: 6969
+    - port: 3000
       protocol: TCP
-      targetPort: 6969
+      targetPort: 3000
 
 ---
 apiVersion: apps/v1
@@ -30,4 +30,4 @@ spec:
           image: 626557673667.dkr.ecr.ap-southeast-1.amazonaws.com/ecr-nashtech-devops-backend:$tagbe
           imagePullPolicy: Always
           ports:
-            - containerPort: 6969
+            - containerPort: 3000
