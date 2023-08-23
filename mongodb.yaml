@@ -5,7 +5,7 @@ metadata:
   name: mongo-sc
 provisioner: kubernetes.io/aws-ebs
 parameters:
-  type: gp2
+  type: gp3
 volumeBindingMode: WaitForFirstConsumer
 
 ---
