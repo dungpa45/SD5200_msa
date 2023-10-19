@@ -3,9 +3,10 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: mongo-sc
-provisioner: kubernetes.io/aws-ebs
-parameters:
-  type: gp3
+provisioner: kubernetes.io/no-provisioner
+# provisioner: kubernetes.io/aws-ebs
+# parameters:
+#   type: gp3
 volumeBindingMode: WaitForFirstConsumer
 
 ---
@@ -37,6 +38,21 @@ metadata:
 type: Opaque
 data:
   MONGODB_INITDB_ROOT_PASSWORD: cGFzc3dvcmQK
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  storageClassName: mongo-sc
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data
+
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -67,6 +83,10 @@ spec:
         volumeMounts:
             - name: data-volume
               mountPath: /data/db
+        resources:
+          requests:
+            cpu: 0.2
+            memory: 200Mi
   volumeClaimTemplates:
     - metadata:
         name: data-volume
