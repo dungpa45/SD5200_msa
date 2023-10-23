@@ -4,8 +4,8 @@ pipeline {
         REGION="ap-southeast-1"
         FRONTEND_REPO="frontend"
         BACKEND_REPO="backend"
-        REPO_FE="dungacr.azurecr.io/devops-frontend"
-        REPO_BE="dungacr.azurecr.io/devops-backend"
+        REPO_FE="dungacr.azurecr.io/ecr-nashtech-devops-frontend"
+        REPO_BE="dungacr.azurecr.io/ecr-nashtech-devops-backend"
         IMAGE_TAG="${BUILD_NUMBER}"
     }
     stages {

@@ -1,2 +1,91 @@
 # SD5200_msa
-MSA application
+
+This repo is used for both programs **DevOps for Devs** and **Pi-sharp**
+
+and I use this Jenkins setup for both
+
+## Installation
+
+> You should choose the virtual machine have >=1vCPU and >=2Gb RAM
+
+### Install Docker
+
+```sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update -y
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+
+sudo usermod -aG docker $USER
+grep docker /etc/group
+sudo newgrp docker
+sudo chmod 777 /var/run/docker.sock
+```
+
+### Install Jenkins
+
+Using this image on dockerhub
+
+<https://hub.docker.com/_/jenkins/>
+
+`docker run --name myjenkins -p 8080:8080 -p 50000:50000 -v /your/home:/var/jenkins_home jenkins`
+
+![Alt text](image.png)
+
+#### Install plugin
+
+- Jenkins suggested
+- Docker Pipeline
+- xUnit plugin
+- Cobertura Plugin
+- Code Coverage Plugin
+- HTML Publisher plugin
+- Pipeline Utility Steps
+- Kubernetes plugin
+- Kubernetes CLI Plugin
+- Kubernetes Credentials Plugin
+
+## Setup Jenkins pipeline
+
+## Use GitOps for the CD pipeline
+
+### Install ArgoCD
+
+```kubectl create namespace argocd
+kubectl apply -n argocd -f  https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Get password
+
+`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode`
+
+Acesss browser localhost:8080
+
+`kubectl port-forward svc/argocd-server -n argocd 8080:443`
+
+![Alt text](image-1.png)
+
+Add app in ArgorCD
+
+- App Name: todo-app
+- Project Name: default
+- Repo URL: <https://github.com/dungpa45/SD5200_msa> (type: GIT)
+- Revision: jenkins (type: Branches)
+- Path: helm/apps
+- Cluster URL: <https://kubernetes.default.svc>
+- Namespace: default
+- Helm section: Select the values file
+![Alt text](image-2.png)
+
+Start Sync and wait a minute, you will get this
+
+![Alt text](image-3.png)
+
+Install and use Argo CD Image Update <https://argocd-image->
+updater.readthedocs.io/en/stable/install/installation This will help you listen to changes the image on ECR and update the image tag in Ops repo.
+
+```
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+```
