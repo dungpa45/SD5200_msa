@@ -10,6 +10,10 @@ pipeline {
         IMAGE_TAG="${BUILD_NUMBER}"
     }
     stages {
+        stage('Initialize'){
+            def dockerHome = tool 'myDocker'
+            env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
         stage('Login ACR'){
             agent any
             steps {
