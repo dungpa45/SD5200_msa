@@ -13,9 +13,8 @@ pipeline {
         stage('Login ACR'){
             agent any
             steps {
-                withCredentials([usernamePassword(credentialsId: 'acr-login', 
-                usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
-                    sh "docker login ${MY_ACR} -u $USERNAME -p $PASSWORD"
+                withCredentials([usernamePassword(credentialsId: 'acr-login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+                sh "docker login ${MY_ACR} -u $USERNAME -p $PASSWORD"
                 }
             }
         }
