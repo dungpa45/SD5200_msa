@@ -12,7 +12,8 @@ and I use this Jenkins setup for both
 
 ### Install Docker
 
-```sudo mkdir -p /etc/apt/keyrings
+```
+sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
@@ -34,11 +35,14 @@ Using this image on dockerhub
 
 `docker run --name myjenkins -p 8080:8080 -p 50000:50000 -v /your/home:/var/jenkins_home jenkins`
 
+Or install Jenkins manually
+
+<https://www.jenkins.io/doc/book/installing/linux/#debianubuntu>
+
 ![Alt text](image.png)
 
 #### Install plugin
 
-- Jenkins suggested
 - Docker Pipeline
 - xUnit plugin
 - Cobertura Plugin
@@ -49,15 +53,58 @@ Using this image on dockerhub
 - Kubernetes CLI Plugin
 - Kubernetes Credentials Plugin
 
+#### Install tools
+
+- aws/azure cli
+- [kubectl cli](https://kubernetes.io/vi/docs/tasks/tools/install-kubectl/)
+- [docker](https://docs.docker.com/engine/install/ubuntu/)
+- [trivy](https://aquasecurity.github.io/trivy/v0.18.3/installation/)
+
 ## Setup Jenkins pipeline
 
+### Use Trivy in Jenkins
+
+Using this code of stage below to use trivy in jenkins pipeline
+
+```
+stage('Trivy Scan Images') {
+  agent any
+  steps {
+    // Install trivy
+    sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
+
+    // Scan all vuln levels
+    sh 'mkdir -p reports'
+    sh "trivy image ${REPO_FE}:${IMAGE_TAG} --format template --template '@html.tpl' --severity HIGH -o reports/frontend-scan.html"
+
+    // Scan again and fail on CRITICAL vulns
+    sh "trivy image ${REPO_BE}:${IMAGE_TAG} --format template --template '@html.tpl' --severity HIGH -o reports/backend-scan.html"
+    publishHTML target : [
+      allowMissing: true,
+      alwaysLinkToLastBuild: true,
+      keepAll: true,
+      reportDir: 'reports',
+      reportFiles: 'backend-scan.html,frontend-scan.html',
+      reportName: 'Trivy Scan',
+      reportTitles: 'Trivy Scan'
+    ]
+  }
+}
+```
+
+We need get this file `html.tpl` to publish the report as HTML
+
+Create folder to store html reports. The report we focus only HIGH severity.
+
+![Alt text](image-5.png)
 
 
 ## Use GitOps for the CD pipeline
 
 ### Install ArgoCD
 
-```kubectl create namespace argocd
+```
+kubectl create namespace argocd
 kubectl apply -n argocd -f  https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
