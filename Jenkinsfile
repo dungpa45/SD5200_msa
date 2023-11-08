@@ -49,53 +49,44 @@ pipeline {
                 sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
                 // Scan all vuln levels
                 sh 'mkdir -p reports'
-                sh "trivy image ${REPO_FE}:${IMAGE_TAG} --format template --template '@html.tpl' -o reports/frontend-scan.html"
-                publishHTML target : [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'reports',
-                    reportFiles: 'frontend-scan.html',
-                    reportName: 'Frontend Trivy Scan',
-                    reportTitles: 'Frontend Trivy Scan'
-                ]
+                sh "trivy image ${REPO_FE}:${IMAGE_TAG} --format template --template '@html.tpl' --severity HIGH -o reports/frontend-scan.html"
                 // Scan again and fail on CRITICAL vulns
-                sh "trivy image ${REPO_BE}:${IMAGE_TAG} --format template --template '@html.tpl' -o reports/backend-scan.html"
+                sh "trivy image ${REPO_BE}:${IMAGE_TAG} --format template --template '@html.tpl' --severity HIGH -o reports/backend-scan.html"
                 publishHTML target : [
                     allowMissing: true,
                     alwaysLinkToLastBuild: true,
                     keepAll: true,
                     reportDir: 'reports',
-                    reportFiles: 'backend-scan.html',
-                    reportName: 'Backend Trivy Scan',
-                    reportTitles: 'Backend Trivy Scan'
+                    reportFiles: 'backend-scan.html','frontend-scan.html'
+                    reportName: 'Trivy Scan',
+                    reportTitles: 'Trivy Scan'
                 ]
             }
         }
-        // stage('Deploy Frontend'){
-        //     agent any
-        //     steps {
-        //         sh "export tagfe=${IMAGE_TAG};envsubst < frontend.yaml > fe.yaml"
-        //         sh "kubectl apply -f fe.yaml"
-        //         sh "kubectl get service"
-        //     }
-        // }
-        // stage('Deploy Backend'){
-        //     agent any
-        //     steps {
-        //         sh "export tagbe=${IMAGE_TAG};envsubst < backend.yaml > be.yaml"
-        //         sh "kubectl apply -f be.yaml"
-        //         sh "kubectl get service"
-        //     }
-        // }
-        // stage('Clean up'){
-        //     agent any
-        //     steps {
-        //         sh "rm -rf be.yaml fe.yaml"
-        //         sh "docker rmi ${REPO_BE}:${IMAGE_TAG}"
-        //         sh "docker rmi ${REPO_FE}:${IMAGE_TAG}"
-        //     }
-        // }
+        stage('Deploy Frontend'){
+            agent any
+            steps {
+                sh "export tagfe=${IMAGE_TAG};envsubst < frontend.yaml > fe.yaml"
+                sh "kubectl apply -f fe.yaml"
+                sh "kubectl get service"
+            }
+        }
+        stage('Deploy Backend'){
+            agent any
+            steps {
+                sh "export tagbe=${IMAGE_TAG};envsubst < backend.yaml > be.yaml"
+                sh "kubectl apply -f be.yaml"
+                sh "kubectl get service"
+            }
+        }
+        stage('Clean up'){
+            agent any
+            steps {
+                sh "rm -rf be.yaml fe.yaml"
+                sh "docker rmi ${REPO_BE}:${IMAGE_TAG}"
+                sh "docker rmi ${REPO_FE}:${IMAGE_TAG}"
+            }
+        }
 
     }
 }

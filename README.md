@@ -1,5 +1,7 @@
 # SD5200_msa
 
+[Managed K8s with Helm](https://github.com/dungpa45/SD5200_msa/tree/jenkins/helm)
+
 This repo is used for both programs **DevOps for Devs** and **Pi-sharp**
 
 and I use this Jenkins setup for both
@@ -48,6 +50,8 @@ Using this image on dockerhub
 - Kubernetes Credentials Plugin
 
 ## Setup Jenkins pipeline
+
+
 
 ## Use GitOps for the CD pipeline
 
