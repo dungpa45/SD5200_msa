@@ -53,7 +53,7 @@ pipeline {
                     keepAll: true,
                     reportDir: 'reports',
                     reportFiles: 'backend-scan.html,frontend-scan.html',
-                    reportName: 'Backend Scan,Frontend Scan'
+                    reportName: 'Backend Scan,Frontend Scan',
                     reportTitles: 'Trivy Scan'
                 ]
             }
