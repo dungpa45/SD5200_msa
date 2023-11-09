@@ -60,6 +60,10 @@ Or install Jenkins manually
 - [docker](https://docs.docker.com/engine/install/ubuntu/)
 - [trivy](https://aquasecurity.github.io/trivy/v0.18.3/installation/)
 
+#### Setup require credentials for pipeline
+
+![credentials](image-7.png)
+
 ## Setup Jenkins pipeline
 
 ### Use Trivy in Jenkins
@@ -85,8 +89,8 @@ stage('Trivy Scan Images') {
       keepAll: true,
       reportDir: 'reports',
       reportFiles: 'backend-scan.html,frontend-scan.html',
-      reportName: 'Trivy Scan',
-      reportTitles: 'Trivy Scan'
+      reportTitles: 'Backend Scan,Frontend Scan',
+      reportName: 'Trivy Scan'
     ]
   }
 }
@@ -98,6 +102,9 @@ Create folder to store html reports. The report we focus only HIGH severity.
 
 ![Alt text](image-5.png)
 
+`reportTitles: 'Backend Scan,Frontend Scan'` in order the html report in `reportFiles`
+
+![Alt text](image-6.png)
 
 ## Use GitOps for the CD pipeline
 
