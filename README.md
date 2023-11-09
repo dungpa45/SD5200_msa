@@ -66,6 +66,10 @@ Or install Jenkins manually
 
 ## Setup Jenkins pipeline
 
+Create a new item as the type is Pipeline and config like the image below
+
+![Alt text](image-8.png)
+
 ### Use Trivy in Jenkins
 
 Using this code of stage below to use trivy in jenkins pipeline
@@ -100,11 +104,75 @@ We need get this file `html.tpl` to publish the report as HTML
 
 Create folder to store html reports. The report we focus only HIGH severity.
 
-![Alt text](image-5.png)
+![Alt text](image-4.png)
 
 `reportTitles: 'Backend Scan,Frontend Scan'` in order the html report in `reportFiles`
 
 ![Alt text](image-6.png)
+
+Images pushed on ACR 
+
+![Alt text](image-5.png)
+
+## Monitoring
+
+#### Use Istio to provide observability metrics, which can be visualized and collected using Grafana and Prometheus
+
+[Install prometheus and grafana with helm chart](https://github.com/prometheus-community/helm-charts)
+
+```
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 
+helm repo add stable https://charts.helm.sh/stable 
+helm repo update
+helm repo list
+```
+
+![helm repo list](image-9.png)
+
+Now we need pull to edit file values before install kube-prometheus-stack
+
+```
+helm pull prometheus-community/kube-prometheus-stack
+tar -xzf kube-prometheus-stack-51.9.4.tgz
+cp kube-prometheus-stack\values.yaml kube-prometheus-stack-values.yaml
+```
+
+Let's edit this file, and pay attention to the attributes below
+
+```
+    podMonitorSelectorNilUsesHelmValues: false 
+
+    serviceMonitorSelectorNilUsesHelmValues: false 
+
+    ruleSelectorNilUsesHelmValues: false
+
+    ......
+
+    additionalScrapeConfigs:
+      - job_name: "Backend"
+        scrape_interval: 15s
+        metrics_path: /api/metrics
+        static_configs:
+          - targets:
+            - backend:3000
+```
+
+Install with the edited file values
+
+```
+helm install -n monitoring prom prometheus-community/kube-prometheus-stack -f kube-prometheus-stack-values.yaml
+```
+
+![list svc monitoring](image-10.png)
+
+By default, all of them not expose to internet, if we want to access via browser we need use `port-forward` of change the service type to `LoadBalancer`.
+
+_Here, we use the first way, using `port-forward`_
+
+```
+kubectl port-forward -n monitoring svc/prom-grafana 80:61553
+kubectl port-forward -n monitoring svc/prom-kube-prometheus-stack-prometheus 9090:61608
+```
 
 ## Use GitOps for the CD pipeline
 
