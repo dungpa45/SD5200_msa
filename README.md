@@ -116,6 +116,26 @@ Images pushed on ACR
 
 ## Monitoring
 
+### Prepare Code
+
+#### We need modify some code in Backend with Prometheus to expose some metrics
+
+Just add somethings like that in Backend `src/backend/routes/index.js`
+
+![Alt text](image-13.png)
+
+and in Frontend `src/frontend/src/App.js`
+
+![Alt text](image-14.png)
+
+And don't forget add `"prom-client": "^14.2.0"` module in package.json
+
+Deploy with CICD, and we can get the new app look like 
+
+![Alt text](image-15.png)
+
+### Implement Tool
+
 #### Use Istio to provide observability metrics, which can be visualized and collected using Grafana and Prometheus
 
 [Install prometheus and grafana with helm chart](https://github.com/prometheus-community/helm-charts)
@@ -173,6 +193,34 @@ _Here, we use the first way, using `port-forward`_
 kubectl port-forward -n monitoring svc/prom-grafana 80:61553
 kubectl port-forward -n monitoring svc/prom-kube-prometheus-stack-prometheus 9090:61608
 ```
+
+Login to Grafana with 
+
+```
+kubectl get secrets -n monitoring prom-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+![grafana pass](image-11.png)
+
+Access to Prometheus we can fine the Backend service 
+
+![Alt text](image-12.png)
+
+In prometheus we find the custom metric has added by code above `number_of_post_request_hit` to see the number of post request
+
+![Alt text](image-16.png)
+
+After that I have add 3 item in frontend
+
+![Alt text](image-18.png)
+
+Now let's create the dashboard for Backend on Grafana
+
+![Alt text](image-17.png)
+
+Add to Dashboard and we have a custom Dashboard for Backend service
+
+![Alt text](image-19.png)
 
 ## Use GitOps for the CD pipeline
 

@@ -1,10 +1,7 @@
 pipeline {
     agent none
     environment {
-        REGION="ap-southeast-1"
         MY_ACR="dungacr.azurecr.io"
-        FRONTEND_REPO="frontend"
-        BACKEND_REPO="backend"
         REPO_FE="dungacr.azurecr.io/devops-frontend"
         REPO_BE="dungacr.azurecr.io/devops-backend"
         IMAGE_TAG="${BUILD_NUMBER}"
@@ -22,8 +19,8 @@ pipeline {
             agent any
             steps {
                 sh "pwd"
-                sh "docker build -t ${FRONTEND_REPO} src/frontend"
-                sh "docker tag ${FRONTEND_REPO}:latest ${REPO_FE}:${IMAGE_TAG}"
+                sh "docker build -t ${REPO_FE} src/frontend"
+                sh "docker tag ${REPO_FE}:latest ${REPO_FE}:${IMAGE_TAG}"
                 sh "docker push ${REPO_FE}:${IMAGE_TAG}"
                 // }
             }
@@ -31,8 +28,8 @@ pipeline {
         stage('Docker Build Backend') {
             agent any
             steps {
-                sh "docker build -t ${BACKEND_REPO} src/backend"
-                sh "docker tag ${BACKEND_REPO}:latest ${REPO_BE}:${IMAGE_TAG}"
+                sh "docker build -t ${REPO_BE} src/backend"
+                sh "docker tag ${REPO_BE}:latest ${REPO_BE}:${IMAGE_TAG}"
                 sh "docker push ${REPO_BE}:${IMAGE_TAG}"
                 // }
             }

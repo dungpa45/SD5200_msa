@@ -6,7 +6,7 @@ name: frontend
 
 # Image repository and tag for the frontend container
 image:
-  repository: hnguyencanh/frontend
+  repository: dungacr.azurecr.io/devops-frontend
   tag: latest
 
 # Port for the frontend service
