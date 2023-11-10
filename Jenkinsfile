@@ -22,6 +22,7 @@ pipeline {
                 sh "docker build -t ${REPO_FE} src/frontend"
                 sh "docker tag ${REPO_FE}:latest ${REPO_FE}:${IMAGE_TAG}"
                 sh "docker push ${REPO_FE}:${IMAGE_TAG}"
+                sh "docker push ${REPO_FE}:latest"
                 // }
             }
         }
@@ -31,6 +32,7 @@ pipeline {
                 sh "docker build -t ${REPO_BE} src/backend"
                 sh "docker tag ${REPO_BE}:latest ${REPO_BE}:${IMAGE_TAG}"
                 sh "docker push ${REPO_BE}:${IMAGE_TAG}"
+                sh "docker push ${REPO_BE}:latest"
                 // }
             }
         }

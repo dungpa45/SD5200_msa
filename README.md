@@ -222,6 +222,41 @@ Add to Dashboard and we have a custom Dashboard for Backend service
 
 ![Alt text](image-19.png)
 
+#### Using Istio
+
+[Install istioctl in local machine and istio in K8s](https://istio.io/latest/docs/setup/getting-started/#install)
+
+```
+curl -L https://istio.io/downloadIstio | sh -
+cd istio-1.19.3
+export PATH=$PWD/bin:$PATH
+```
+```
+istioctl install --set profile=demo -y
+kubectl label namespace default istio-injection=enabled
+```
+
+We need redeploy my app to take the effect, [For more information refer to the following here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/)
+
+![Alt text](image-20.png)
+
+I only have 1 pod for each of the following services. But after istio was install we have a istio-proxy (sidecar pod) for each service
+
+![Alt text](image-21.png)
+
+Go in to folder istio we were download, and apply all addons
+
+```
+cd istio-1.19.3
+kubectl apply -f samples/addons
+kubectl rollout status deployment/kiali -n istio-system
+istioctl dashboard kiali
+```
+
+Access to the browser
+
+![Alt text](image-22.png)
+
 ## Use GitOps for the CD pipeline
 
 ### Install ArgoCD
@@ -257,8 +292,7 @@ Start Sync and wait a minute, you will get this
 
 ![Alt text](image-3.png)
 
-Install and use Argo CD Image Update <https://argocd-image->
-updater.readthedocs.io/en/stable/install/installation This will help you listen to changes the image on ECR and update the image tag in Ops repo.
+[Install and use Argo CD Image Update](https://argocd-image-updater.readthedocs.io/en/stable/install/installation) This will help you listen to changes the image on ECR and update the image tag in Ops repo.
 
 ```
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
