@@ -57,26 +57,26 @@ pipeline {
                 ]
             }
         }
-        stage('Deploy Frontend'){
-            agent any
-            steps {
-                sh "export tagfe=${IMAGE_TAG};envsubst < frontend.yaml > fe.yaml"
-                sh "kubectl apply -f fe.yaml"
-                sh "kubectl get service"
-            }
-        }
-        stage('Deploy Backend'){
-            agent any
-            steps {
-                sh "export tagbe=${IMAGE_TAG};envsubst < backend.yaml > be.yaml"
-                sh "kubectl apply -f be.yaml"
-                sh "kubectl get service"
-            }
-        }
+        // stage('Deploy Frontend'){
+        //     agent any
+        //     steps {
+        //         sh "export tagfe=${IMAGE_TAG};envsubst < frontend.yaml > fe.yaml"
+        //         sh "kubectl apply -f fe.yaml"
+        //         sh "kubectl get service"
+        //     }
+        // }
+        // stage('Deploy Backend'){
+        //     agent any
+        //     steps {
+        //         sh "export tagbe=${IMAGE_TAG};envsubst < backend.yaml > be.yaml"
+        //         sh "kubectl apply -f be.yaml"
+        //         sh "kubectl get service"
+        //     }
+        // }
         stage('Clean up'){
             agent any
             steps {
-                sh "rm -rf be.yaml fe.yaml"
+                // sh "rm -rf be.yaml fe.yaml"
                 sh "docker rmi ${REPO_BE}:${IMAGE_TAG}"
                 sh "docker rmi ${REPO_FE}:${IMAGE_TAG}"
             }

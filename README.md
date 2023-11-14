@@ -62,13 +62,13 @@ Or install Jenkins manually
 
 #### Setup require credentials for pipeline
 
-![credentials](image-7.png)
+![credentials](images/image-7.png)
 
 ## Setup Jenkins pipeline
 
 Create a new item as the type is Pipeline and config like the image below
 
-![Alt text](image-8.png)
+![Alt text](images/image-8.png)
 
 ### Use Trivy in Jenkins
 
@@ -104,15 +104,15 @@ We need get this file `html.tpl` to publish the report as HTML
 
 Create folder to store html reports. The report we focus only HIGH severity.
 
-![Alt text](image-4.png)
+![Alt text](images/image-4.png)
 
 `reportTitles: 'Backend Scan,Frontend Scan'` in order the html report in `reportFiles`
 
-![Alt text](image-6.png)
+![Alt text](images/image-6.png)
 
 Images pushed on ACR 
 
-![Alt text](image-5.png)
+![Alt text](images/image-5.png)
 
 ## Monitoring
 
@@ -122,17 +122,17 @@ Images pushed on ACR
 
 Just add somethings like that in Backend `src/backend/routes/index.js`
 
-![Alt text](image-13.png)
+![Alt text](images/image-13.png)
 
 and in Frontend `src/frontend/src/App.js`
 
-![Alt text](image-14.png)
+![Alt text](images/image-14.png)
 
 And don't forget add `"prom-client": "^14.2.0"` module in package.json
 
 Deploy with CICD, and we can get the new app look like 
 
-![Alt text](image-15.png)
+![Alt text](images/image-15.png)
 
 ### Implement Tool
 
@@ -147,7 +147,7 @@ helm repo update
 helm repo list
 ```
 
-![helm repo list](image-9.png)
+![helm repo list](images/image-9.png)
 
 Now we need pull to edit file values before install kube-prometheus-stack
 
@@ -183,7 +183,7 @@ Install with the edited file values
 helm install -n monitoring prom prometheus-community/kube-prometheus-stack -f kube-prometheus-stack-values.yaml
 ```
 
-![list svc monitoring](image-10.png)
+![list svc monitoring](images/image-10.png)
 
 By default, all of them not expose to internet, if we want to access via browser we need use `port-forward` of change the service type to `LoadBalancer`.
 
@@ -200,27 +200,27 @@ Login to Grafana with
 kubectl get secrets -n monitoring prom-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
-![grafana pass](image-11.png)
+![grafana pass](images/image-11.png)
 
 Access to Prometheus we can fine the Backend service 
 
-![Alt text](image-12.png)
+![Alt text](images/image-12.png)
 
 In prometheus we find the custom metric has added by code above `number_of_post_request_hit` to see the number of post request
 
-![Alt text](image-16.png)
+![Alt text](images/image-16.png)
 
 After that I have add 3 item in frontend
 
-![Alt text](image-18.png)
+![Alt text](images/image-18.png)
 
 Now let's create the dashboard for Backend on Grafana
 
-![Alt text](image-17.png)
+![Alt text](images/image-17.png)
 
 Add to Dashboard and we have a custom Dashboard for Backend service
 
-![Alt text](image-19.png)
+![Alt text](images/image-19.png)
 
 #### Using Istio
 
@@ -238,11 +238,11 @@ kubectl label namespace default istio-injection=enabled
 
 We need redeploy my app to take the effect, [For more information refer to the following here](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/)
 
-![Alt text](image-20.png)
+![Alt text](images/image-20.png)
 
 I only have 1 pod for each of the following services. But after istio was install we have a istio-proxy (sidecar pod) for each service
 
-![Alt text](image-21.png)
+![Alt text](images/image-21.png)
 
 Go in to folder istio we were download, and apply all addons
 
@@ -255,9 +255,11 @@ istioctl dashboard kiali
 
 Access to the browser
 
-![Alt text](image-22.png)
+![Alt text](images/image-22.png)
 
 ## Use GitOps for the CD pipeline
+
+***Now we use Jenkins just for the CI step, CD will take place by argoCD***
 
 ### Install ArgoCD
 
@@ -274,7 +276,7 @@ Acesss browser localhost:8080
 
 `kubectl port-forward svc/argocd-server -n argocd 8080:443`
 
-![Alt text](image-1.png)
+![Alt text](images/image-1.png)
 
 Add app in ArgorCD
 
@@ -286,14 +288,14 @@ Add app in ArgorCD
 - Cluster URL: <https://kubernetes.default.svc>
 - Namespace: default
 - Helm section: Select the values file
-![Alt text](image-2.png)
+![Alt text](images/image-2.png)
 
 Start Sync and wait a minute, you will get this
 
-![Alt text](image-3.png)
+![Alt text](images/image-3.png)
 
-[Install and use Argo CD Image Update](https://argocd-image-updater.readthedocs.io/en/stable/install/installation) This will help you listen to changes the image on ECR and update the image tag in Ops repo.
+[Install and use Argo CD Image Update](https://argocd-images/image-updater.readthedocs.io/en/stable/install/installation) This will help you listen to changes the image on ECR and update the image tag in Ops repo.
 
 ```
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-images/image-updater/stable/manifests/install.yaml
 ```

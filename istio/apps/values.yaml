@@ -1,0 +1,11 @@
+mongodb:
+  replicaCount: 1
+  name: mongo
+
+backend:
+  replicaCount: 1
+  name: backend-app
+
+frontend:
+  replicaCount: 1
+  name: frontend-app
