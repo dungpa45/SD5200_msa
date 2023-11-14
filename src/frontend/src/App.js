@@ -52,7 +52,7 @@ export default class App extends React.Component {
         <div className="container-fluid">
           <div className="row">
             <div className="col-xs-12 col-sm-8 col-md-8 offset-md-2">
-              <h1>Todos App</h1>
+              <h1>Todos App 1</h1>
               <h2>:D</h2>
               <div className="todo-app">
                 <AddTodo handleAddTodo={this.handleAddTodo} />

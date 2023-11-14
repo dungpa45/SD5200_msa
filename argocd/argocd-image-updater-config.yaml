@@ -1,6 +1,4 @@
 apiVersion: v1
-data:
-  log.level: debug
 kind: ConfigMap
 metadata:
   annotations:
@@ -15,3 +13,12 @@ metadata:
   namespace: argocd
   resourceVersion: "685300"
   uid: 73c60306-e6ef-4689-86c2-3b5ba9a940fe
+data:
+  log.level: debug
+  registries.conf: |
+    registries:
+    - name: DungACR
+      prefix: dungacr.azurecr.io
+      api_url: https://dungacr.azurecr.io
+      credentials: pullsecret:argocd/acr-regcred
+      default: true
