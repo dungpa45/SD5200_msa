@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: helm-mongodb
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: mongodb=mongo
+    argocd-image-updater.argoproj.io/mongodb.update-strategy: latest
+    argocd-image-updater.argoproj.io/git-branch: jenkins
+    argocd-image-updater.argoproj.io/write-back-method: git
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/dungpa45/SD5200_msa
+    targetRevision: jenkins
+    path: istio/apps/charts/mongodb
+   
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  # Sync policy
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true  
+   
