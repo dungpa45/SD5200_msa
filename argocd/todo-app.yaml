@@ -4,10 +4,10 @@ metadata:
   name: helm-todo-app
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: frontend=dungacr.azurecr.io/devops-frontend, backend=dungacr.azurecr.io/devops-backend, mongodb=mongo
-    argocd-image-updater.argoproj.io/frontend.update-strategy: latest
+    argocd-image-updater.argoproj.io/image-list: frontend=dungacr.azurecr.io/devops-frontend:latest, backend=dungacr.azurecr.io/devops-backend:latest, mongodb=mongo
+    argocd-image-updater.argoproj.io/frontend.update-strategy: digest
     argocd-image-updater.argoproj.io/frontend.allow-tags: regexp:^v1.0.0-[0-9a-zA-Z]+$
-    argocd-image-updater.argoproj.io/backend.update-strategy: latest
+    argocd-image-updater.argoproj.io/backend.update-strategy: digest
     argocd-image-updater.argoproj.io/backend.allow-tags: regexp:^v1.0.0-[0-9a-zA-Z]+$
     argocd-image-updater.argoproj.io/mongodb.update-strategy: latest
     argocd-image-updater.argoproj.io/git-branch: jenkins
@@ -28,7 +28,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: default
   # Sync policy
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true  
+  # syncPolicy:
+  #   syncOptions:
+  #     - CreateNamespace=true  
    
